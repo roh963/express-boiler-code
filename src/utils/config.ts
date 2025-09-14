@@ -13,6 +13,8 @@ export const config = {
   port: process.env.PORT ? Number(process.env.PORT) : 3000,
   env: process.env.NODE_ENV || 'development',
   corsWhitelist: parseWhitelist(process.env.CORS_ORIGIN_WHITELIST),
+  mongoUri: process.env.MONGODB_URI || '',
+  mongoDbName: process.env.MONGO_DB_NAME || '',
 };
 
 export function getAppVersion(): string {
