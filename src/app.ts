@@ -1,50 +1,58 @@
+import './types/express/index';
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-import rateLimit from 'express-rate-limit';
 import { config } from './utils/config';
-import { errorHandler, notFoundHandler } from './middlewares/error.middleware';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler';
+import { authLimiter, writeLimiter } from './middleware/rateLimiter';
 import healthRouter from './routes/health.route';
+import feedbackRouter from './routes/feedback.route';
 import { Request, Response } from 'express';
+import { connectDB } from './db';
+import authRoutes from './routes/auth.route';
 
 const app = express();
 
+connectDB()
+
 // Security Middlewares
 app.use(helmet());
-app.use(
-  cors({
-    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-      if (!origin || config.corsWhitelist.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-  })
-);
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    standardHeaders: true,
-    legacyHeaders: false,
-  })
-);
+
+// CORS setup
+const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean);
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+
+// Rate limiting
+app.use('/auth', authLimiter);
+app.use(['/','/api'], (req, res, next) => {
+  if (['POST','PUT','DELETE'].includes(req.method)) {
+    return writeLimiter(req, res, next);
+  }
+  next();
+});
 
 // Body parser
 app.use(express.json());
 
 // Logger (dev only)
 if (config.env === 'development') {
-  app.use(morgan('dev', { 
-    skip: (req: Request, res: Response) => false,
-  }));
+  app.use(morgan('dev'));
 }
 
 // Routes
 app.use('/health', healthRouter);
+app.use('/auth', authRoutes);
+app.use('/api/feedback', feedbackRouter);
 
 // 404 Handler
 app.use(notFoundHandler);
