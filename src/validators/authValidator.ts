@@ -1,6 +1,7 @@
+// src/validators/authValidator.ts
 import { z } from 'zod';
 import { Request, Response, NextFunction } from 'express';
-
+import { ApiError } from '../utils/ApiError';
 
 export const registerSchema = z.object({
   name: z.string().min(3, { message: 'Name must be at least 3 characters' }),
@@ -19,11 +20,11 @@ export function validateRegister(req: Request, res: Response, next: NextFunction
     req.body = result.data;
     return next();
   }
-  const errors = result.error.issues.map(e => ({
+  const errors = result.error.issues.map((e) => ({
     field: e.path[0],
     message: e.message,
   }));
-  return res.status(400).json({ errors });
+  throw new ApiError(400, 'Validation failed', errors);
 }
 
 export function validateLogin(req: Request, res: Response, next: NextFunction) {
@@ -32,9 +33,9 @@ export function validateLogin(req: Request, res: Response, next: NextFunction) {
     req.body = result.data;
     return next();
   }
-  const errors = result.error.issues.map(e => ({
+  const errors = result.error.issues.map((e) => ({
     field: e.path[0],
     message: e.message,
   }));
-  return res.status(400).json({ errors });
+  throw new ApiError(400, 'Validation failed', errors);
 }

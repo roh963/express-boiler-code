@@ -1,11 +1,10 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
+// src/utils/asyncHandler.ts
+import { Request, Response, NextFunction } from 'express';
 
-type MaybePromise<T> = T | Promise<T>;
-
-type UniversalHandler<T = void> = (req: Request, res: Response, next: NextFunction) => MaybePromise<T>;
-
-export const asyncHandler = <T = void>(fn: UniversalHandler<T>): RequestHandler => {
-  return (req, res, next) => {
+export function asyncHandler(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>,
+) {
+  return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
-};
+}

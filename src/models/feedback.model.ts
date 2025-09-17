@@ -1,3 +1,4 @@
+// src/models/feedback.model.ts
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IFeedback extends Document {
@@ -7,13 +8,15 @@ export interface IFeedback extends Document {
   createdAt: Date;
 }
 
-
-const FeedbackSchema = new Schema<IFeedback>({
-  name: { type: String, required: true, minlength: 3, trim: true },
-  email: { type: String, required: true, match: /.+\@.+\..+/, lowercase: true },
-  message: { type: String, required: true, minlength: 10 },
-}, {
-  timestamps: true // keep both createdAt and updatedAt for audit, but only return createdAt in API if needed
-});
+const FeedbackSchema = new Schema<IFeedback>(
+  {
+    name: { type: String, required: true, minlength: 3, trim: true },
+    email: { type: String, required: true, match: /.+@.+\..+/, lowercase: true },
+    message: { type: String, required: true, minlength: 10 },
+  },
+  {
+    timestamps: true,
+  },
+);
 
 export const Feedback = mongoose.model<IFeedback>('Feedback', FeedbackSchema);

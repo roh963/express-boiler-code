@@ -1,9 +1,11 @@
 # Express Boilerplate (TypeScript, Clean Architecture)
 
 ## Overview
+
 A production-ready Express.js boilerplate using TypeScript, following Clean Architecture and best practices.
 
 ## Tech Stack
+
 - Node.js
 - Express.js
 - TypeScript
@@ -14,6 +16,7 @@ A production-ready Express.js boilerplate using TypeScript, following Clean Arch
 ## Getting Started
 
 ### 1. Clone & Install
+
 ```sh
 git clone <repo-url>
 cd express-boilder-code
@@ -21,20 +24,24 @@ npm install
 ```
 
 ### 2. Environment Setup
+
 - Copy `.env.example` to `.env` and adjust as needed.
 
 ### 3. Run Locally
+
 ```sh
 npm run dev
 ```
 
 ### 4. Build & Start
+
 ```sh
 npm run build
 npm start
 ```
 
 ## Folder Structure
+
 ```
 src/
   server.ts         # Entry point
@@ -48,6 +55,7 @@ docs/
 ```
 
 ## Middleware List
+
 - helmet (security headers)
 - cors (strict allowlist)
 - express-rate-limit (rate limiting)
@@ -55,7 +63,9 @@ docs/
 - morgan (dev logging)
 
 ## Error Handling Contract
+
 All errors return JSON:
+
 ```
 {
   "message": "...",
@@ -66,10 +76,13 @@ All errors return JSON:
 ```
 
 ## Health Route
+
 - `GET /health` → `{ status: "ok", uptime, env, version }`
 
 ## Lint & Format
+
 - Pre-commit hooks block bad code: `npm run lint` and `npm run format`.
 
 ## License
+
 MIT

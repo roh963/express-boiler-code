@@ -3,9 +3,9 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier'
+    'plugin:prettier/recommended',
   ],
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint', 'prettier'],
   env: {
     node: true,
     es2020: true,
@@ -13,6 +13,5 @@ module.exports = {
   rules: {
     '@typescript-eslint/no-explicit-any': 'warn',
     'no-console': 'warn',
-    'prettier/prettier': 'error',
   },
 };

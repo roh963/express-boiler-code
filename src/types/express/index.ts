@@ -1,11 +1,10 @@
-
 export type UserPayload = {
   _id: string;
   role: string;
   email: string;
 };
 
-import { IUser } from "../../models/user.model";
+import { IUser } from '../../models/user.model';
 
 declare global {
   namespace Express {

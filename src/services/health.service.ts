@@ -1,4 +1,3 @@
-
 import { config, getAppVersion } from '../utils/config';
 
 export async function getHealthInfo() {

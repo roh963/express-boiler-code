@@ -1,3 +1,4 @@
+// src/utils/ApiError.ts
 export class ApiError extends Error {
   public statusCode: number;
   public success: false = false;

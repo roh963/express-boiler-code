@@ -23,9 +23,7 @@
       "name": "Register",
       "request": {
         "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" }
-        ],
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
@@ -42,9 +40,7 @@
       "name": "Login",
       "request": {
         "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" }
-        ],
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
@@ -101,9 +97,7 @@
       "name": "List Feedback (paginated)",
       "request": {
         "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
-        ],
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
         "url": {
           "raw": "{{baseUrl}}/feedback?page=1&limit=5",
           "host": ["{{baseUrl}}"],
@@ -120,9 +114,7 @@
       "name": "Get Feedback by ID",
       "request": {
         "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
-        ],
+        "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
         "url": {
           "raw": "{{baseUrl}}/feedback/{{feedbackId}}",
           "host": ["{{baseUrl}}"],
@@ -155,9 +147,7 @@
       "name": "Delete Feedback (ADMIN only)",
       "request": {
         "method": "DELETE",
-        "header": [
-          { "key": "Authorization", "value": "Bearer {{adminAccessToken}}" }
-        ],
+        "header": [{ "key": "Authorization", "value": "Bearer {{adminAccessToken}}" }],
         "url": {
           "raw": "{{baseUrl}}/feedback/{{feedbackId}}",
           "host": ["{{baseUrl}}"],
@@ -170,9 +160,7 @@
       "name": "Unauthorized Feedback Create",
       "request": {
         "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" }
-        ],
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"name\": \"Anon\",\n  \"email\": \"anon@example.com\",\n  \"message\": \"Should fail\"\n}"
