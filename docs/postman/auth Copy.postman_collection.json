@@ -1,131 +1,107 @@
 {
-	"info": {
-		"_postman_id": "8fd2763c-8d81-41ef-a2d7-11cdbc675a11",
-		"name": "auth Copy",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "28519951",
-		"_collection_link": "https://gold-eclipse-634764.postman.co/workspace/My-Workspace~9c7e3821-89ce-4595-8592-c80a9c7f373d/collection/28519951-8fd2763c-8d81-41ef-a2d7-11cdbc675a11?action=share&source=collection_link&creator=28519951"
-	},
-	"item": [
-		{
-			"name": "signup",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"name\": \"User Name\",\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"password123\",\r\n  \"role\":\"admin\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:5001/api/auth/register",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"api",
-						"auth",
-						"register"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "login",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "  {\r\n    \"email\": \"john@example.com\",\r\n    \"password\": \"password123\"\r\n  }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:5000/api/auth/login",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"auth",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "refresh",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "  {\r\n    \"email\": \"john@example.com\",\r\n    \"password\": \"password123\"\r\n  }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:5000/api/auth/login",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"auth",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "logout",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "  {\r\n    \"email\": \"john@example.com\",\r\n    \"password\": \"password123\"\r\n  }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:5000/api/auth/login",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"auth",
-						"login"
-					]
-				}
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "8fd2763c-8d81-41ef-a2d7-11cdbc675a11",
+    "name": "auth Copy",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "28519951",
+    "_collection_link": "https://gold-eclipse-634764.postman.co/workspace/My-Workspace~9c7e3821-89ce-4595-8592-c80a9c7f373d/collection/28519951-8fd2763c-8d81-41ef-a2d7-11cdbc675a11?action=share&source=collection_link&creator=28519951"
+  },
+  "item": [
+    {
+      "name": "signup",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"User Name\",\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"password123\",\r\n  \"role\":\"admin\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5001/api/auth/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5001",
+          "path": ["api", "auth", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n    \"email\": \"john@example.com\",\r\n    \"password\": \"password123\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "refresh",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n    \"email\": \"john@example.com\",\r\n    \"password\": \"password123\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "logout",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "  {\r\n    \"email\": \"john@example.com\",\r\n    \"password\": \"password123\"\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5000/api/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["api", "auth", "login"]
+        }
+      },
+      "response": []
+    }
+  ]
 }

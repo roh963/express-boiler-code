@@ -1,7 +1,11 @@
-
+// src/routes/feedback.routes.ts
 import { Router } from 'express';
 import * as feedbackController from '../controllers/feedback.controller';
-import { validateResource, CreateFeedbackSchema, UpdateFeedbackSchema } from '../validators/feedbackValidator';
+import {
+  validateResource,
+  CreateFeedbackSchema,
+  UpdateFeedbackSchema,
+} from '../validators/feedbackValidator';
 
 const router = Router();
 

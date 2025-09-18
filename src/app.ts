@@ -1,3 +1,5 @@
+//app.ts
+
 import './types/express/index';
 import express from 'express';
 import helmet from 'helmet';
@@ -8,34 +10,38 @@ import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 import { authLimiter, writeLimiter } from './middleware/rateLimiter';
 import healthRouter from './routes/health.route';
 import feedbackRouter from './routes/feedback.route';
-import { Request, Response } from 'express';
 import { connectDB } from './db';
 import authRoutes from './routes/auth.route';
 
 const app = express();
 
-connectDB()
+connectDB();
 
 // Security Middlewares
 app.use(helmet());
 
 // CORS setup
-const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',').map(o => o.trim()).filter(Boolean);
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-}));
+const allowedOrigins = (process.env.CORS_ORIGINS || '')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  }),
+);
 
 // Rate limiting
 app.use('/auth', authLimiter);
-app.use(['/','/api'], (req, res, next) => {
-  if (['POST','PUT','DELETE'].includes(req.method)) {
+app.use(['/', '/api'], (req, res, next) => {
+  if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
     return writeLimiter(req, res, next);
   }
   next();

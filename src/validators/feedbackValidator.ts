@@ -1,5 +1,7 @@
-
+// src/validators/feedbackValidator.ts
 import { z } from 'zod';
+import { Request, Response, NextFunction } from 'express';
+import { ApiError } from '../utils/ApiError';
 
 export const CreateFeedbackSchema = z.object({
   name: z.string().min(3, { message: 'Name must be at least 3 characters' }),
@@ -13,8 +15,6 @@ export const UpdateFeedbackSchema = z.object({
   message: z.string().min(10, { message: 'Message must be at least 10 characters' }).optional(),
 });
 
-import { Request, Response, NextFunction } from 'express';
-
 export function validateResource(schema: z.ZodSchema<any>) {
   return (req: Request, res: Response, next: NextFunction) => {
     const result = schema.safeParse(req.body);
@@ -22,10 +22,10 @@ export function validateResource(schema: z.ZodSchema<any>) {
       req.body = result.data;
       return next();
     }
-    const errors = result.error.issues.map(e => ({
+    const errors = result.error.issues.map((e) => ({
       field: e.path[0],
       message: e.message,
     }));
-    return res.status(400).json({ errors });
+    throw new ApiError(400, 'Validation failed', errors);
   };
 }

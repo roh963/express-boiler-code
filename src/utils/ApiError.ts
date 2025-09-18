@@ -1,6 +1,7 @@
+// src/utils/ApiError.ts
 export class ApiError extends Error {
   public statusCode: number;
-  public success: false = false;
+  public success: false = false as const;
   public errors?: any;
 
   constructor(statusCode: number, message: string, errors?: any) {

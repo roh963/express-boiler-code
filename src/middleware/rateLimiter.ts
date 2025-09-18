@@ -1,8 +1,8 @@
 import rateLimit from 'express-rate-limit';
 
 export const authLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 5,
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: {
     error: {
       message: 'Too many auth requests, please try again later.',
@@ -14,8 +14,8 @@ export const authLimiter = rateLimit({
 });
 
 export const writeLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 10 minutes
-  max: 5,
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: {
     error: {
       message: 'Too many write requests, please try again later.',
