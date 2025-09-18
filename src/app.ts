@@ -60,6 +60,10 @@ app.use('/health', healthRouter);
 app.use('/auth', authRoutes);
 app.use('/api/feedback', feedbackRouter);
 
+app.get("/", (req, res) => {
+  res.send("🚀 Express + TypeScript backend is live!");
+});
+
 // 404 Handler
 app.use(notFoundHandler);
 
