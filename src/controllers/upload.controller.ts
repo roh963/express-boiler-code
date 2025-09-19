@@ -7,6 +7,61 @@ import { asyncHandler } from '../utils/asyncHandler';
 
  
 // S3 Upload conroller
+// export const uploadController = asyncHandler(async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     if (!req.file) {
+//       res.status(400).json({
+//         success: false,
+//         message: 'No file uploaded',
+//         error: 'File is required'
+//       } as UploadResponse);
+//       return;
+//     }
+
+//     // Generate unique filename
+//     const fileName = s3Service.generateFileName(req.file.originalname, req.file.mimetype);
+    
+//     // Get presigned URL for upload
+//     const presignedUrl = await s3Service.getPresignedUploadUrl(fileName, req.file.mimetype);
+
+//     // Presigned URL for secure download (GET)
+//     const presignedDownloadUrl = await s3Service.getPresignedDownloadUrl(fileName);
+    
+//     // Get public URL
+//     const publicUrl = s3Service.getPublicUrl(fileName);
+
+//     // Save metadata to database
+//     const fileDoc = new FileModel({
+//       filename: fileName,
+//       originalName: req.file.originalname,
+//       mimetype: req.file.mimetype,
+//       size: req.file.size,
+//       url: publicUrl,
+//       storageType: 's3',
+//       uploadedBy: req.body.userId || null
+//     });
+
+//     await fileDoc.save();
+
+//     res.status(201).json({
+//       success: true,
+//       message: 'File uploaded successfully to S3',
+//       data: {
+//         file: fileDoc.toObject(),
+//         presignedUrl: presignedUrl,
+//         downloadUrl: presignedDownloadUrl
+//       }
+//     } as UploadResponse);
+
+//   } catch (error) {
+//     console.error('S3 upload error:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Failed to upload file to S3',
+//       error: error instanceof Error ? error.message : 'Unknown error'
+//     } as UploadResponse);
+//   }
+// });
 export const uploadController = asyncHandler(async (req: Request, res: Response): Promise<void> => {
   try {
     if (!req.file) {
@@ -21,11 +76,14 @@ export const uploadController = asyncHandler(async (req: Request, res: Response)
     // Generate unique filename
     const fileName = s3Service.generateFileName(req.file.originalname, req.file.mimetype);
     
-    // Get presigned URL for upload
-    const presignedUrl = await s3Service.getPresignedUploadUrl(fileName, req.file.mimetype);
+    // **IMPORTANT**: Actually upload the file to S3
+    await s3Service.uploadFile(fileName, req.file.buffer, req.file.mimetype);
     
     // Get public URL
     const publicUrl = s3Service.getPublicUrl(fileName);
+    
+    // Generate presigned download URL for secure access
+    const presignedDownloadUrl = await s3Service.getPresignedDownloadUrl(fileName);
 
     // Save metadata to database
     const fileDoc = new FileModel({
@@ -45,7 +103,8 @@ export const uploadController = asyncHandler(async (req: Request, res: Response)
       message: 'File uploaded successfully to S3',
       data: {
         file: fileDoc.toObject(),
-        presignedUrl: presignedUrl
+        uploadUrl: publicUrl, // This is now the actual file URL
+        downloadUrl: presignedDownloadUrl
       }
     } as UploadResponse);
 

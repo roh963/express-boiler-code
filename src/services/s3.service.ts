@@ -42,6 +42,27 @@ class S3Service {
     return extensions[mimetype] || '';
   }
 
+  // **NEW METHOD**: Direct upload to S3
+  public async uploadFile(fileName: string, fileBuffer: Buffer, mimetype: string): Promise<void> {
+    const command = new PutObjectCommand({
+      Bucket: this.bucketName,
+      Key: fileName,
+      Body: fileBuffer,
+      ContentType: mimetype,
+      // Optional: Make file publicly accessible
+      // ACL: 'public-read'
+    });
+
+    try {
+      await this.s3Client.send(command);
+      console.log(`File uploaded successfully: ${fileName}`);
+    } catch (error) {
+      console.error('Error uploading file to S3:', error);
+      throw new Error(`Failed to upload file to S3: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  // Keep existing methods for presigned URLs (useful for client-side uploads)
   public async getPresignedUploadUrl(fileName: string, mimetype: string): Promise<string> {
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
@@ -63,6 +84,24 @@ class S3Service {
 
   public getPublicUrl(fileName: string): string {
     return `https://${this.bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+  }
+
+  // **NEW METHOD**: Check if file exists in S3
+  public async fileExists(fileName: string): Promise<boolean> {
+    try {
+      const command = new GetObjectCommand({
+        Bucket: this.bucketName,
+        Key: fileName
+      });
+      
+      await this.s3Client.send(command);
+      return true;
+    } catch (error: any) {
+      if (error.name === 'NoSuchKey') {
+        return false;
+      }
+      throw error;
+    }
   }
 }
 
