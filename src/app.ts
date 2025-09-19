@@ -12,6 +12,8 @@ import healthRouter from './routes/health.route';
 import feedbackRouter from './routes/feedback.route';
 import { connectDB } from './db';
 import authRoutes from './routes/auth.route';
+import { uploadRoutes } from './routes/upload.routes';
+import path from 'path';
 
 const app = express();
 
@@ -55,10 +57,14 @@ if (config.env === 'development') {
   app.use(morgan('dev'));
 }
 
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Routes
 app.use('/health', healthRouter);
 app.use('/auth', authRoutes);
 app.use('/api/feedback', feedbackRouter);
+app.use('/api/upload',authLimiter, uploadRoutes);
 
 
 app.get("/", (req, res) => {

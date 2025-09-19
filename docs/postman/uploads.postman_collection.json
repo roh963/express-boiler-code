@@ -1,0 +1,58 @@
+{
+	"info": {
+		"_postman_id": "3ded8395-e170-4483-b78f-34a1453ff8dc",
+		"name": "uploads",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28519951",
+		"_collection_link": "https://gold-eclipse-634764.postman.co/workspace/My-Workspace~9c7e3821-89ce-4595-8592-c80a9c7f373d/collection/28519951-3ded8395-e170-4483-b78f-34a1453ff8dc?action=share&source=collection_link&creator=28519951"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1f0953c5-f790-4b30-9ce3-a10740629c80"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/upload/s3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"upload",
+						"s3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

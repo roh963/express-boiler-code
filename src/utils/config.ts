@@ -15,6 +15,8 @@ export const config = {
   corsWhitelist: parseWhitelist(process.env.CORS_ORIGIN_WHITELIST),
   mongoUri: process.env.MONGODB_URI || '',
   mongoDbName: process.env.MONGO_DB_NAME || '',
+  redisUrl: process.env.REDIS_URL || '',
+
 };
 
 export function getAppVersion(): string {

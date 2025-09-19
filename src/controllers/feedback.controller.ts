@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import * as feedbackService from '../services/feedback.service';
 import { asyncHandler } from '../utils/asyncHandler';
+import { emailQueue } from '../utils/queue.config';
 
 // List all feedback with pagination
 export const listFeedback = asyncHandler(async (req: Request, res: Response) => {
@@ -34,6 +35,15 @@ export const getFeedback = asyncHandler(async (req: Request, res: Response) => {
 export const createFeedback = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, message } = req.body;
   const feedback = await feedbackService.createFeedback({ name, email, message });
+
+  await emailQueue.add('sendEmail', {
+  feedbackId: feedback._id,
+  userEmail: feedback.email,  
+  feedbackTitle: `Feedback from ${feedback.name}`,   
+  feedbackContent: feedback.message
+});
+    console.log(`Job enqueued for feedback ID: ${feedback._id}`);
+
   res.status(201).json({
     success: true,
     feedback,

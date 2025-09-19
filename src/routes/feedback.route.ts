@@ -6,11 +6,12 @@ import {
   CreateFeedbackSchema,
   UpdateFeedbackSchema,
 } from '../validators/feedbackValidator';
+import { cacheMiddleware } from '../middleware/cache.middleware';
 
 const router = Router();
 
 // GET /api/feedback?page=1&limit=10
-router.get('/', feedbackController.listFeedback);
+router.get('/',cacheMiddleware(15), feedbackController.listFeedback);
 
 // GET /api/feedback/:id
 router.get('/:id', feedbackController.getFeedback);
