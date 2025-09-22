@@ -51,3 +51,22 @@ export interface EmailJobData {
   feedbackTitle: string;
   feedbackContent: string;
 }
+
+export interface SendOTPRequest {
+  email: string;
+}
+
+export interface VerifyOTPRequest {
+  email: string;
+  otp: string;
+}
+
+export interface SendOTPResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface VerifyOTPResponse {
+  success: boolean;
+  message: string;
+}

@@ -2,6 +2,7 @@
 import { z } from 'zod';
 import { Request, Response, NextFunction } from 'express';
 import { ApiError } from '../utils/ApiError';
+import Joi from 'joi';
 
 export const registerSchema = z.object({
   name: z.string().min(3, { message: 'Name must be at least 3 characters' }),
@@ -39,3 +40,8 @@ export function validateLogin(req: Request, res: Response, next: NextFunction) {
   }));
   throw new ApiError(400, 'Validation failed', errors);
 }
+
+
+
+
+
