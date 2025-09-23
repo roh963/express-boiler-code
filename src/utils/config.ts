@@ -16,6 +16,8 @@ export const config = {
   mongoUri: process.env.MONGODB_URI || '',
   mongoDbName: process.env.MONGO_DB_NAME || '',
   redisUrl: process.env.REDIS_URL || '',
+  secretKey: process.env.JWT_SECRET || '',
+  refreshKey: process.env.JWT_REFRESH_SECRET || '',
   otpExpiryMinutes: process.env.OTP_EXPIRY_MINUTES 
 
 };

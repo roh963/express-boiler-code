@@ -19,4 +19,5 @@ RUN npm install --only=production
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.env ./.env
 
-CMD ["npm", "start"]
+CMD ["npm", "run", "start:worker"]
+

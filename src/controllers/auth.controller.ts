@@ -2,12 +2,13 @@
 import RefreshToken from '../models/RefreshToken';
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import User from '../models/user.model';
+import User, { UserRole } from '../models/user.model';
 import { ApiError } from '../utils/ApiError';
 import bcrypt from 'bcryptjs';
 import { signAccessToken, signRefreshToken } from '../services/auth.service';
 import { asyncHandler } from '../utils/asyncHandler';
 import { OtpService } from '../services/otp.service';
+import { io } from '../realtime/socket';
 
 interface UserPayload {
   _id: string;
@@ -15,9 +16,10 @@ interface UserPayload {
   role: string;
 }
 
-export const register =asyncHandler( async (req: Request, res: Response, next: NextFunction) => {
+export const register = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
+     console.log('req.body:', req.body);
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       throw new ApiError(400, 'Invalid email address', [
@@ -36,14 +38,17 @@ export const register =asyncHandler( async (req: Request, res: Response, next: N
         { field: 'email', message: 'Email already registered' },
       ]);
     }
+    const rawRole = role?.toString().toUpperCase();
+    
+
+    // 6️⃣ Create user
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await User.create({ name, email, passwordHash });
-
+    const user = await User.create({ name, email, passwordHash, role: role === "ADMIN" ? "ADMIN" : "USER", });
 
     return res.status(201).json({
       success: true,
-      data: { id: user._id, email: user.email, name: user.name },
+      data: { id: user._id, email: user.email, name: user.name, role: user.role },
       message: 'User registered',
     });
   } catch (err) {
@@ -51,7 +56,7 @@ export const register =asyncHandler( async (req: Request, res: Response, next: N
   }
 });
 
-export const login = asyncHandler( async (req: Request, res: Response, next: NextFunction) => {
+export const login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
 
@@ -67,11 +72,11 @@ export const login = asyncHandler( async (req: Request, res: Response, next: Nex
         { field: 'credentials', message: 'Invalid email or password' },
       ]);
     }
-     if(! user.isVerified){
-       throw new ApiError(401, 'Account not verified. Please verify your email.', [
+    if (!user.isVerified) {
+      throw new ApiError(401, 'Account not verified. Please verify your email.', [
         { field: 'verfication', message: 'Account not verified' },
       ]);
-     }
+    }
     const accessToken = signAccessToken({ _id: user._id, email: user.email, role: user.role });
     const refreshTokenValue = signRefreshToken({
       _id: user._id,
@@ -86,7 +91,7 @@ export const login = asyncHandler( async (req: Request, res: Response, next: Nex
       data: {
         accessToken,
         refreshToken: refreshTokenValue,
-        user: { id: user._id, email: user.email, name: user.name },
+        user: { id: user._id, email: user.email, name: user.name  ,role: user.role},
       },
       message: 'Login successful',
     });
@@ -95,7 +100,7 @@ export const login = asyncHandler( async (req: Request, res: Response, next: Nex
   }
 });
 
-export const refresh = asyncHandler( async (req: Request, res: Response, next: NextFunction) => {
+export const refresh = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
@@ -130,7 +135,7 @@ export const refresh = asyncHandler( async (req: Request, res: Response, next: N
   }
 });
 
-export const logout = asyncHandler( async (req: Request, res: Response, next: NextFunction) => {
+export const logout = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
@@ -171,26 +176,42 @@ export const sendOtp = asyncHandler(
   }
 );
 
-export const verifyOtp = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { email, otp } = req.body;
-    if (!email || !otp) {
-      throw new ApiError(400, 'Email and OTP are required');
-    }
-
-    const isValid = await OtpService.verifyOtp(email, otp);
-    if (isValid) {
-      // Update user in MongoDB
-      const user = await User.findOneAndUpdate(
-        { email: email.toLowerCase() },
-        { isVerified: true },
-        { new: true }
-      );
-      if (!user) {
-        throw new ApiError(404, 'User not found');
-      }
-    }
-
-    res.status(200).json({ success: true, message: 'OTP verified' });
+export const verifyOtp = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const { email, otp } = req.body;
+  if (!email || !otp) {
+    throw new ApiError(400, 'Email and OTP are required');
   }
-);
+
+  const isValid = await OtpService.verifyOtp(email, otp);
+  if (!isValid) {
+    throw new ApiError(400, 'Invalid or expired OTP');
+  }
+
+  // Update user in MongoDB
+  const user = await User.findOneAndUpdate(
+    { email: email.toLowerCase() },
+    { isVerified: true },
+    { new: true }
+  );
+
+  if (!user) {
+    throw new ApiError(404, 'User not found');
+  }
+
+  // Emit otp-verified event to this user's room
+  try {
+    // if user._id is an ObjectId, convert to string
+    io.of('/realtime').to(`user:${user._id}`).emit('otp-verified', {
+  success: true,
+  message: 'OTP verified',
+  userId: user._id,
+  timestamp: Date.now(),
+});
+  } catch (err) {
+    // Log but don't block response
+    // eslint-disable-next-line no-console
+    console.error('Error emitting otp-verified:', err);
+  }
+
+  res.status(200).json({ success: true, message: 'OTP verified' });
+});

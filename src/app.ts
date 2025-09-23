@@ -3,6 +3,7 @@
 import './types/express/index';
 import express from 'express';
 import helmet from 'helmet';
+import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
 import { config } from './utils/config';
@@ -18,6 +19,8 @@ import path from 'path';
 const app = express();
 
 connectDB();
+
+dotenv.config();
 
 // Security Middlewares
 app.use(helmet());
@@ -51,6 +54,8 @@ app.use(['/', '/api'], (req, res, next) => {
 
 // Body parser
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('tools'));
 
 // Logger (dev only)
 if (config.env === 'development') {

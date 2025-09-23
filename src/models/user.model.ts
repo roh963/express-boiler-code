@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-export type UserRole = 'USER' | 'ADMIN';
+export type UserRole = "USER" | "ADMIN";
 
 export interface IUser extends Document {
   name: string;
@@ -17,7 +17,7 @@ const UserSchema = new Schema<IUser>({
   name: { type: String, required: true, minlength: 3 },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
   passwordHash: { type: String, required: true },
-  role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
+role:{type: String, enum: ["USER", "ADMIN"],default: "USER", },
   isVerified: {
     type: Boolean,
     default: false

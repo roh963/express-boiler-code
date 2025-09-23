@@ -3,6 +3,9 @@ import { Request, Response } from 'express';
 import * as feedbackService from '../services/feedback.service';
 import { asyncHandler } from '../utils/asyncHandler';
 import { emailQueue } from '../utils/queue.config';
+import { Socket } from 'socket.io';
+import { io } from '../realtime/socket';
+
 
 // List all feedback with pagination
 export const listFeedback = asyncHandler(async (req: Request, res: Response) => {
@@ -36,17 +39,34 @@ export const createFeedback = asyncHandler(async (req: Request, res: Response) =
   const { name, email, message } = req.body;
   const feedback = await feedbackService.createFeedback({ name, email, message });
 
-  await emailQueue.add('sendEmail', {
-  feedbackId: feedback._id,
-  userEmail: feedback.email,  
-  feedbackTitle: `Feedback from ${feedback.name}`,   
-  feedbackContent: feedback.message
-});
- console.log(`Job enqueued for feedback ID: ${feedback._id}`);
+  // Emit minimal safe data
+  const safeFeedback = { id: feedback._id, name, message }; // Avoid leaking sensitive fields
+//  io.of('/realtime').to("admins").emit('new-feedback', safeFeedback);
 
+  try {
+    io.of('/realtime').to('admins').emit('new-feedback', {
+  id: feedback._id,
+  name: feedback.name,
+  message: feedback.message,
+  email: feedback.email,
+  createdAt: feedback.createdAt,
+});
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('Error emitting new-feedback:', err);
+  }
+
+  await emailQueue.add('sendEmail', {
+    feedbackId: feedback._id,
+    userEmail: feedback.email,
+    feedbackTitle: `Feedback from ${feedback.name}`,
+    feedbackContent: feedback.message,
+  });
+  console.log(`Job enqueued for feedback ID: ${feedback._id}`);
+   
   res.status(201).json({
     success: true,
-    feedback,
+    feedback: safeFeedback, // Return safe data in response too
     message: 'Feedback created',
   });
 });

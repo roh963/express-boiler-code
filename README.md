@@ -86,3 +86,10 @@ All errors return JSON:
 ## License
 
 MIT
+
+## Real-Time Setup
+- Install deps: See Step 1 above.
+- Run with Docker: `docker-compose up` (includes Redis).
+- Socket server runs on same port as API.
+- For scaling: `docker-compose up --scale app=2`
+- Test with demos in /tools

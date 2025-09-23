@@ -36,3 +36,13 @@ export const otpRateLimit = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+export const sendRateLimit = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 3, // Maximum 3 OTP requests per 15 minutes per IP
+  message: {
+    success: false,
+    message: 'Too many  requests send for otp. Please try again later.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});

@@ -1,16 +1,17 @@
 import app from './app';
-import { config } from './utils/config';
+import http from 'http';
+import https from 'https';
+import fs from 'fs';
+import path from 'path';
+import dotenv from 'dotenv';
+import { initSocket } from './realtime/socket';
 
-const port = config.port;
+dotenv.config();
 
-const server = app.listen(port, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Server running on port ${port}`);
-});
+// ... (existing middleware, routes, e.g., app.use(express.json()); app.use('/api', routes);)
 
-process.on('SIGTERM', () => {
-  server.close(() => {
-    // eslint-disable-next-line no-console
-    console.log('Process terminated');
-  });
-});
+const server = http.createServer(app);
+initSocket(server);
+
+const PORT = process.env.PORT || 8000;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

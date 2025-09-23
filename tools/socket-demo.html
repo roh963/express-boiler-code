@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+  <script>
+    const socket = io('http://localhost:8000/realtime', {
+      auth: { token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGQyZTI0ZWYwYWE3ZTljMzZmZTljZmQiLCJlbWFpbCI6ImFkbWluNkBleGFtcGxlLmNvbSIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc1ODY1OTQzMywiZXhwIjoxNzU4NjYwMzMzfQ.y05fO3r7M0AoVOSgrCcxb-gUiaIiL-WHATQzfhuyCDE" }, // Replace with valid JWT
+    });
+    socket.on('connect', () => console.log('✅ Connected', socket.id));
+    socket.on('otp-verified', (data) => console.log('🔑 OTP Verified:', data));
+    socket.on('new-feedback', (data) => console.log('📢 New Feedback:', data));
+    socket.on('error', (err) => console.log('❌ Error:', err));
+  </script>
+</body>
+</html>
